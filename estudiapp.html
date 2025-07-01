@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermenéutica y Subjetividad - EstudiApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .card-container {
+            perspective: 1000px;
+        }
+        .card {
+            width: 100%;
+            height: 200px; /* Altura fija para las tarjetas */
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            position: relative;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-front {
+            background-color: #f0f9ff; /* light blue-50 */
+            color: #1e40af; /* blue-800 */
+        }
+        .card-back {
+            background-color: #bfdbfe; /* blue-200 */
+            color: #1e40af; /* blue-800 */
+            transform: rotateY(180deg);
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .sidebar.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar w-full md:w-64 bg-blue-800 text-white p-6 space-y-4 md:flex md:flex-col" id="sidebar">
+            <h1 class="text-3xl font-bold mb-6">EstudiApp</h1>
+            <button class="w-full text-left py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" onclick="loadTheme('presentacion')">Tema 1: Presentación</button>
+            <button class="w-full text-left py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" onclick="loadTheme('foucault-nietzsche-freud-marx')">Tema 2: Foucault, Nietzsche, Freud y Marx</button>
+            <button class="w-full text-left py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" onclick="loadTheme('freud-suenos')">Tema 3: Freud y la interpretación de los sueños</button>
+            <button class="w-full text-left py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" onclick="loadTheme('marx-economia')">Tema 4: Marx y la crítica de la economía política</button>
+            <button class="w-full text-left py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" onclick="loadTheme('ricoeur-cultura')">Tema 5: Ricoeur y la interpretación de la cultura</button>
+        </aside>
+
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden fixed top-4 left-4 bg-blue-800 text-white p-3 rounded-full shadow-lg z-50" onclick="toggleSidebar()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            <h1 class="text-4xl font-extrabold text-blue-900 mb-8">Hermenéutica y Subjetividad</h1>
+
+            <div id="content-area" class="space-y-8">
+                <!-- Content will be loaded here by JavaScript -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-semibold text-blue-700 mb-4">Bienvenido a EstudiApp</h2>
+                    <p class="text-gray-700">Selecciona un tema de la barra lateral para comenzar tu estudio sobre hermenéutica y subjetividad. Aquí encontrarás información clave sobre pensadores como Foucault, Nietzsche, Freud, Marx y Ricoeur, presentada en un formato interactivo de tarjetas.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const themes = {
+            'presentacion': {
+                summary: "Esta sección introduce los conceptos fundamentales de la hermenéutica y la subjetividad, preparando el terreno para el estudio de los autores clave.",
+                cards: [
+                    { question: "¿Qué es la hermenéutica?", answer: "La hermenéutica es la teoría y el arte de la interpretación, especialmente de textos, pero también de acciones y fenómenos culturales." },
+                    { question: "¿Qué se entiende por subjetividad en este contexto?", answer: "La subjetividad se refiere a la construcción del 'yo' o la identidad, influenciada por factores sociales, culturales, históricos y psicológicos." }
+                ]
+            },
+            'foucault-nietzsche-freud-marx': {
+                summary: "Este tema explora las contribuciones de Foucault, Nietzsche, Freud y Marx a la comprensión de la subjetividad y el poder, a menudo desafiando las nociones tradicionales de verdad y conocimiento.",
+                cards: [
+                    { question: "¿Cómo aborda Foucault la subjetividad?", answer: "Foucault analiza la subjetividad no como una esencia fija, sino como una construcción histórica y social, moldeada por discursos y prácticas de poder. Su obra 'Historia de la Sexualidad' es un ejemplo clave de cómo el poder produce sujetos." },
+                    { question: "¿Qué papel juega Nietzsche en la crítica de la verdad y la moral?", answer: "Nietzsche critica la moral tradicional y la noción de verdad absoluta, argumentando que son construcciones humanas que sirven a intereses de poder. Su concepto de 'voluntad de poder' influye en la comprensión de la subjetividad como una fuerza activa y creadora." },
+                    { question: "¿Cuál es la relación entre Freud y la subjetividad?", answer: "Freud introduce el inconsciente como un elemento fundamental en la constitución de la subjetividad. Los deseos reprimidos y los conflictos internos moldean la identidad individual, a menudo de formas que escapan a la conciencia." },
+                    { question: "¿Cómo contribuye Marx a la comprensión de la subjetividad?", answer: "Marx argumenta que la subjetividad está profundamente influenciada por las condiciones materiales y las relaciones de producción. La conciencia y la identidad individual son productos de la estructura económica y social." },
+                    { question: "¿Qué tienen en común estos pensadores?", answer: "Los cuatro son considerados 'maestros de la sospecha' por su crítica a las apariencias y su búsqueda de las fuerzas ocultas (poder, voluntad, inconsciente, economía) que moldean la realidad y la subjetividad." }
+                ]
+            },
+            'freud-suenos': {
+                summary: "Esta sección se centra en la teoría de Freud sobre la interpretación de los sueños como una vía para acceder al inconsciente y comprender la subjetividad.",
+                cards: [
+                    { question: "¿Por qué Freud considera los sueños importantes?", answer: "Freud ve los sueños como la 'vía regia al inconsciente', una manifestación de deseos reprimidos y conflictos internos que no pueden expresarse directamente en la conciencia." },
+                    { question: "¿Qué es el contenido manifiesto y latente de un sueño?", answer: "El contenido manifiesto es lo que el soñador recuerda del sueño. El contenido latente son los pensamientos y deseos inconscientes subyacentes que el análisis busca revelar." },
+                    { question: "¿Cómo se relaciona la interpretación de los sueños con la subjetividad?", answer: "Al interpretar los sueños, Freud busca desentrañar los procesos inconscientes que influyen en la personalidad, los conflictos y las motivaciones del individuo, revelando así aspectos profundos de su subjetividad." }
+                ]
+            },
+            'marx-economia': {
+                summary: "Aquí se explora la crítica de Marx a la economía política y cómo las relaciones de producción influyen en la conciencia y la subjetividad de los individuos.",
+                cards: [
+                    { question: "¿Cuál es la idea central de la crítica de Marx a la economía política?", answer: "Marx argumenta que las relaciones económicas (modos de producción) son la base de la sociedad y determinan las superestructuras políticas, legales e ideológicas, incluyendo la conciencia individual." },
+                    { question: "¿Cómo afecta la alienación a la subjetividad según Marx?", answer: "La alienación, producto del sistema capitalista, deshumaniza al trabajador al separarlo del producto de su trabajo, del proceso de producción, de su propia esencia humana y de otros individuos, afectando profundamente su subjetividad." },
+                    { question: "¿Qué es la conciencia de clase?", answer: "Es la comprensión que los individuos tienen de su posición en la estructura de clases y de los intereses comunes que comparten con otros miembros de su clase, lo que puede llevar a la acción colectiva y a la transformación social." }
+                ]
+            },
+            'ricoeur-cultura': {
+                summary: "Esta sección aborda la hermenéutica de Paul Ricoeur, enfocándose en su enfoque de la interpretación de la cultura y el texto como medios para comprender la subjetividad.",
+                cards: [
+                    { question: "¿Cómo concibe Ricoeur la hermenéutica?", answer: "Ricoeur la ve como un proceso de desvelamiento del significado oculto en los textos y las acciones humanas, buscando comprender la intencionalidad y la experiencia detrás de ellos." },
+                    { question: "¿Qué significa la 'distanciación' en la hermenéutica de Ricoeur?", answer: "La distanciación es el proceso por el cual un texto o una acción se independizan de su autor o contexto original, permitiendo múltiples interpretaciones y una comprensión más profunda por parte del lector/intérprete." },
+                    { question: "¿Cómo se relaciona la interpretación de la cultura con la subjetividad en Ricoeur?", answer: "Para Ricoeur, la interpretación de las obras culturales (textos, mitos, símbolos) es fundamental para la autocomprensión. Al interpretar el mundo, el sujeto se interpreta a sí mismo, construyendo su identidad a través del diálogo con el significado." }
+                ]
+            }
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        function loadTheme(themeName) {
+            const contentArea = document.getElementById('content-area');
+            const themeData = themes[themeName];
+
+            if (!themeData) {
+                contentArea.innerHTML = `<div class="bg-red-100 text-red-800 p-4 rounded-lg">Tema no encontrado.</div>`;
+                return;
+            }
+
+            let htmlContent = `
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h2 class="text-2xl font-semibold text-blue-700 mb-4">Resumen del Tema</h2>
+                    <p class="text-gray-700">${themeData.summary}</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            `;
+
+            themeData.cards.forEach((card, index) => {
+                htmlContent += `
+                    <div class="card-container" onclick="flipCard(this)">
+                        <div class="card">
+                            <div class="card-face card-front flex flex-col justify-center items-center text-center p-4">
+                                <p class="font-semibold text-lg">${card.question}</p>
+                            </div>
+                            <div class="card-face card-back flex flex-col justify-center items-center text-center p-4">
+                                <p class="text-base">${card.answer}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            htmlContent += `</div>`;
+            contentArea.innerHTML = htmlContent;
+
+            // Close sidebar on mobile after selecting a theme
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+
+        function flipCard(cardContainer) {
+            cardContainer.querySelector('.card').classList.toggle('flipped');
+        }
+
+        // Load default theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme('presentacion');
+        });
+    </script>
+</body>
+</html>
